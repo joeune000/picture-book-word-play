@@ -8,3 +8,15 @@
 .topbar .header-actions{margin-left:auto}
 @media(max-width:1250px){.topbar .header-actions{margin-left:0;flex-basis:100%;width:100%;order:3;grid-template-columns:1.3fr 1fr 1fr}}
 @media(max-width:600px){.topbar .brand{gap:10px;flex-shrink:1}.creator-character{width:58px;height:64px}.brand-copy{gap:4px}.brand-copy strong{font-size:19px;letter-spacing:-.7px}.creator-credit{font-size:11px}.topbar .header-actions{grid-template-columns:1fr 1fr}}
+
+/* A compact identity header appears once on every printed sheet, including keys. */
+.worksheet > .sheet-heading.sheet-brand{display:flex;align-items:center;justify-content:space-between;gap:3mm;min-height:14mm;margin:0 0 3mm;padding:0 0 2mm;border-bottom:1px solid #aab9c8;break-inside:avoid;flex:none}
+.sheet-brand-identity{display:flex;align-items:center;gap:2mm;flex-shrink:0}
+.sheet-brand-character{display:block;width:12mm;height:13mm;object-fit:contain;flex:none}
+.sheet-brand-copy{display:flex;flex-direction:column;gap:1mm;color:#17345c}
+.sheet-brand-copy strong{font-size:11pt;line-height:1.35;letter-spacing:-.35pt}
+.sheet-brand-copy > span{font-size:7pt;line-height:1.4;color:#45576a;font-weight:400;letter-spacing:0}
+.sheet-brand-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2mm;max-width:74mm;font-size:8pt;line-height:1.5;word-break:keep-all;text-align:right}
+.worksheet.multi-page{height:276mm;min-height:276mm;padding:4mm;gap:3mm}
+.worksheet.multi-page > .sheet-brand{margin-bottom:0}
+@media print{.worksheet.multi-page{height:276mm;min-height:276mm;padding:4mm;gap:3mm}.sheet-brand-character{print-color-adjust:exact;-webkit-print-color-adjust:exact}}

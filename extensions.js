@@ -70,11 +70,22 @@ const oldHint=hint;hint=function(){const q=current(),slot=q?.slots[state.active]
 // Print sheets preserve the source wording and use the illustration from that source page.
 let sheets=[];
 function sheet(q,i,total,bank){const trace=$('print-writing').value==='trace';const article=E('article','worksheet');const head=E('div','sheet-heading');head.append(E('span','',bookTitle(state.book)),E('span','','이름: __________________  날짜: ______________'));article.append(head);article.append(E('h2','',q.passage.title));const img=E('img','sheet-scene');img.src=Scene(q.passage.page);img.alt=q.passage.title+' 삽화';article.append(img);const passage=E('div','sheet-passage');let pos=0;for(const [i,s] of q.slots.entries()){passage.append(document.createTextNode(q.passage.text.slice(pos,s.start)));const blank=E('span','paper-blank boxed-blank'+(trace?' trace-blank':''));if(q.slots.length>1)blank.append(E('span','blank-number',String(i+1)));[...s.word].forEach(letter=>blank.append(E('span',letter===' '?'writing-space':'answer-cell'+(trace?' trace-word':''),trace&&letter!==' '?letter:'')));passage.append(blank);pos=s.start+s.word.length;}passage.append(document.createTextNode(q.passage.text.slice(pos)));article.append(passage);if(bank){const b=E('div','word-bank');b.append(E('strong','','보기  '));shuffled(q.slots.map(s=>s.word)).forEach(w=>b.append(E('span','',w)));article.append(b);}article.append(E('div','sheet-practice',trace?'연한 글씨를 따라 한 번 더 써 봐요.':'빈칸에 낱말을 한 번 더 써 봐요.'));const practice=E('div','word-practice');q.slots.forEach((slot,j)=>{const group=E('div','practice-word');if(q.slots.length>1)group.append(E('span','practice-number',String(j+1)));[...slot.word].forEach(letter=>group.append(E('span',letter===' '?'writing-space':'practice-cell'+(trace?' trace-word':''),trace&&letter!==' '?letter:'')));practice.append(group);});article.append(practice);article.append(E('footer','sheet-footer','『'+bookTitle(state.book)+'』 · PDF '+q.passage.page+'쪽 원문 발췌 / 삽화 '+(q.passage.scenePage||q.passage.page)+'쪽 일부 · '+(i+1)+' / '+total));return article;}
+function addWorksheetBrand(page){
+ const existing=page.querySelector(':scope > .sheet-heading');
+ const head=existing||E('header','sheet-heading');
+ const metadata=E('div','sheet-brand-meta');
+ if(existing)metadata.append(...existing.childNodes);
+ const identity=E('div','sheet-brand-identity');
+ const image=E('img','sheet-brand-character');image.src='teacher-character.png';image.alt='김조은 선생님 캐릭터';image.width=46;image.height=49;
+ const copy=E('div','sheet-brand-copy');copy.append(E('strong','','한빛반 그림책 낱말 놀이'),E('span','','만든이: 신둔초등학교 교사 김조은'));
+ identity.append(image,copy);head.replaceChildren(identity,metadata);head.classList.add('sheet-brand');
+ if(!existing)page.prepend(head);
+}
 function preparePrint(){
  const all=$('print-range').value==='all',perPage=Number($('print-per-page').value)||2,scale=[1,1.3,1.5].includes(Number($('print-size').value))?Number($('print-size').value):1.3;
  sheets=all?state.deck:(current()?[current()]:state.deck.slice(0,1));
  $('print-preview').replaceChildren();$('print-root').replaceChildren();
- const append=n=>{n.style.setProperty('--writing-scale',scale);n.dataset.writingScale=String(scale);$('print-preview').append(n);$('print-root').append(n.cloneNode(true));};
+ const append=n=>{addWorksheetBrand(n);n.style.setProperty('--writing-scale',scale);n.dataset.writingScale=String(scale);$('print-preview').append(n);$('print-root').append(n.cloneNode(true));};
  const pageCount=Math.ceil(sheets.length/perPage);
  for(let offset=0;offset<sheets.length;offset+=perPage){
   if(perPage===1){append(sheet(sheets[offset],offset,sheets.length,$('print-wordbank').checked));continue;}
